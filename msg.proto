@@ -1,0 +1,128 @@
+syntax = "proto2";package la.shanggou.live.proto.gateway;message User {required int32 uid = 1;optional int32 gender = 2;optional int32 verified = 3;optional int32 exp = 4;optional int32 level = 5;optional int32 authed = 6;optional int32 status = 7;optional string nickname = 8;optional int32 guard = 9;optional int32 rider = 10;optional string portrait = 11;repeated string guardArray = 12;optional int32 honorOwid = 13;optional int32 honorLevel = 14;optional string honorName = 15;optional bool honorOwIsGray =16;optional int32 no = 17;optional int32 noType = 18;
+}message LiveData {required int32 online = 1;required int32 starlight = 2;required int32 fight = 3;required int32 status = 4;optional int32 views = 5;optional int32 duration = 6;optional int32 maxOnline = 7;optional bool isRectify = 8;
+}message RoomAttr {required uint32 priv = 1;optional int32 guard = 2;optional int32 medal = 3;
+}message RetetionAttr {required int32 aliveTime = 1;required int32 nowTime = 2;required int32 startTime = 3;optional int32 id = 4;
+}message LoginReq {required int32 uid = 1;required string pwd = 2;required string devid = 3;required string app = 4;required int64 rt = 5;required string vk = 6;required string ver = 7;required string channel = 8;
+}message LoginResp {required int32 status = 1;optional int32 uid = 2;
+}message RoomJoinReq {required int32 owid = 1;
+}message RoomJoinResp {required int32 owid = 1;required int32 code = 2;optional RoomAttr roomAttr = 3; //optional LiveData liveData = 4;repeated int32 optionalTextColors = 5;
+}message RoomJoinNotifyUp {required int32 owid = 1;
+}message RoomJoinNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;
+}message RoomLeaveReq {required int32 owid = 1;
+}message ChatUp {required int32 type = 1;required string txt = 2;repeated User toUsers = 3;optional int32 color = 4;optional TextAttribe textAttr = 5;
+}message ChatNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 type = 4;required string txt = 5;optional int32 color = 6;repeated User toUsers = 7;optional RetetionAttr retetionAttr = 8;optional string platForm = 9;optional TextAttribe textAttr = 10;
+}message GiftUp {required int32 owid = 1;required int32 gid = 2;optional int32 attrId = 3;optional int32 count = 4;optional string txt = 5;optional string ext = 6;
+}message GiftNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 combo = 4;required int32 comboId = 5;required int32 gid = 6;optional int32 attrId = 7;optional int32 count = 8;optional RetetionAttr retetionAttr = 9;optional int32 luckyMulti = 10;
+}message ZanUp {required int32 owid = 1;required int32 color = 2;
+}message ZanNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 color = 4;
+}message ManagerNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 status = 4;
+}message RoomUpdateNotify {required int32 owid = 1;required LiveData liveData = 2;
+}message RoomGuardNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required int32 uid = 3;
+}message AnchorLiveStatusNotify {required int32 owid = 1;required int32 type = 2;
+}message SharedNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required string type = 4;required string tips = 5;
+}message FollowedNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required string tips = 4;
+}message RedEnvelopeNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 rid = 4;required int32 type = 5;required int32 amount = 6;optional string txt = 7;optional RetetionAttr retetionAttr = 8;required uint32 key = 9;optional int32 boxType = 10;
+}message UserAttrNotify {required User user = 1;required int32 diamond = 2;required int32 starlight = 3;required int32 fight = 4;optional int32 seed = 5;
+}message UserLevelUpNotify {required int32 owid = 1;required RoomAttr roomAttr = 2;required User user = 3;required int32 nextLevel = 4;required int32 needDiamod = 5;required int32 percent = 6;required int32 type = 7;optional string tips = 8;
+}message KickoutNotify {required int32 owid = 1;optional string msg = 2;
+}message LinkApply {required int32 owid = 1;required int32 uid = 2;required int32 applyCount = 3;
+}message LinkCancel {required int32 owid = 1;required int32 uid = 2;required int32 applyCount = 3;
+}message LinkClose {required int32 owid = 1;required int32 applyCount = 2;
+}message LinkNotify {required int32 owid = 1;required int32 applyCount = 2;
+}message LinkAccept {required int32 owid = 1;required string roomName = 2;required string token = 3;
+}message LinkBroadcast {required int32 owid = 1;required int32 status = 2;repeated User linkers = 3;
+}message BannerNotify
+{required int32 owid = 1;required User user = 2;required User anchor = 3;required int32 templateId = 4;required int32 gid = 5;required int32 attrId = 6;required int32 giftCount = 7;optional string txt = 8;optional User officialRoom = 9;optional int32 landscape = 10;optional int32 luckyMulti = 11;repeated MapEntry params = 12;
+}message RunChickenNotify
+{required int32 owid = 1;required double curDistance = 2;required double curSpeed = 3;required double maxSpeed = 4;required int32 curCombo = 5;required int32 maxCombo = 6;required int32 status = 7;
+}message OfficialLiveStatusNotify
+{required int32 owid = 1;repeated User  anchorList = 2;optional User  currentAnchor = 3;
+}message OfficialLiveLikeUp
+{required int32 owid = 1;required int32 action = 2;
+}message OfficialLiveLikeNotify
+{required int32 owid = 1;required int32 remainingTime = 2;required int32 like = 3;required int32 unlike = 4;
+}message AnchorIndicateNotify
+{required int32 action = 1;optional string txt = 2;
+}message OfficialLiveNavigationChange
+{required int32 srcOwid = 1;required int32 destOwid = 2;required string streamUrl = 3;
+}message ChallengeTask
+{required int32 taskId = 1;required int32 amount = 2;required int32 val = 3;
+}message ChallengeTaskStatus
+{required int32 owid = 1;required int32 replayId = 2;required int32 startTime = 3;required int32 times = 4;required int32 status = 5;repeated ChallengeTask ChallengeTaskList = 6;optional User user = 7;
+}message ChallengeBet
+{required int32 owid = 1;required int32 replayId = 2;required User User = 3;required int32 amount = 4;required int32 taskId = 5;repeated ChallengeTask ChallengeTaskList = 6;optional int32 combo = 7;
+}message ChallengeAward
+{required int32 owid = 1;required int32 replayId = 2;required RoomAttr roomAttr = 3;required User user = 4;optional string source = 5;optional string tips = 6;optional int32 diamond = 7;optional int32 seed = 8;
+}message GlobalMsg
+{required int32 type = 1;repeated Ext ext = 2;
+}message Ext
+{optional User user = 1 ;optional string txt  = 2 ;optional int32 color = 3 ;optional RoomAttr roomAttr = 4;
+}message TextAttribe
+{optional string font = 1;required int32 fontSize = 2;optional int32 color = 3;required int32 floatStyle = 4;required int32 shading = 5;required int32 payMethod = 6;
+}message GiftboxDone
+{required int32 owid = 1;required int32 type = 2;required int32 boxid = 3;
+}message DialogNotify
+{required int32 type = 1;required string title = 2;required string content = 3;repeated DialogButton buttons = 4;repeated MapEntry paramEntries = 5;
+}message DialogButton
+{required string button = 1;optional string url = 2;optional int32 action = 3;
+}message MapEntry {required string key = 1;required string value = 2;
+}message BagUp {optional int32 owid = 1;required int32 pid = 2;optional int32 count = 3;optional string ext = 4;required int32 platform = 5;//
+}message BagNotify {required int32 uid = 1;optional int32 action = 2;optional int32 pid = 3;optional int32 num = 4;optional int32 expire = 5;optional int32 expireNum = 6;
+}message ChangeList  {required int32 userPropId = 1;required int32 propNum = 2;
+}message GuessUpdate
+{required int32 owid = 1;repeated GuessSubject subjects = 2;required int32 nowTime = 3;
+}message GuessSubject
+{required int32 guessID = 1;required string title = 2;required int32 status = 3;optional string reason = 4;optional int32 endTime = 5;repeated GuessItem items = 6;
+}message GuessItem
+{required string desc = 1;required float odd = 2;required int32 stake = 3;required int32 balance = 4;required int32 itemID = 5;optional bool isWin = 6;
+}message GuessWin
+{required int32 uid = 1;required int32 owid = 2;repeated GuessAward awards = 3;
+}message GuessAward
+{required int32 guessID = 1;required string title = 2;required string desc = 3;required int32 award  = 4;required int32 status = 5;
+}message GuessGuide
+{required int32 uid = 1;required string content = 2;required string url = 3;
+}message HonorLevelUp
+{required int32 uid = 1;optional int32 honorOwid = 2;optional int32 honorLevel = 3;optional string honorName = 4;optional bool honorOwIsGray = 5;optional int32 type = 6;
+}message RectifyRoomNotify
+{required int32 owid = 1;required int32 op = 2;
+}
+
+message BombNotify {
+    required int32 owid = 1;
+    required int32 id = 2;
+    required int32 bombId = 3;
+    required int32 origin = 4;
+    required int32 status = 5;
+    required int32 explodeTime = 6;
+}
+
+message DoubleElevenLotteryDrawList {
+    required string prizeName = 1;
+    required string userName = 2;
+    required int32 propNum = 3;
+    required string prizeId = 4;
+}
+
+message DoubleElevenLotteryPrizeList {
+    required string prizeName = 1;
+    required string userName = 2;
+    required int32 uid = 3;
+    required string time = 4;
+    required int32 propNum = 5;
+    required string prizeId = 6;
+}
+
+message DoubleElevenLotteryBestAssistList {
+    required string prizeName = 1;
+    required string userName = 2;
+    required int32 uid = 3;
+    required int32 propNum = 4;
+    required string prizeId = 5;
+}
+
+message DoubleElevenLotteryNotify {
+    required int32 owid = 1; //房间
+    repeated DoubleElevenLotteryDrawList drawList = 2;
+    repeated DoubleElevenLotteryPrizeList prizeList = 3;
+    repeated DoubleElevenLotteryBestAssistList bestAssistList = 4;
+}
