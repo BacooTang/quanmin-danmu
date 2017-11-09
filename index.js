@@ -1,5 +1,6 @@
 const ws = require('ws')
 const fs = require('fs')
+const md5 = require('md5')
 const crc32 = require('./crc32')
 const events = require('events')
 const gateway = require('./gateway')
@@ -56,8 +57,12 @@ class quanmin_danmu extends events {
                     price: item.diamond
                 }
             })
-            opt.url = `https://www.quanmin.tv/shouyin_api/public/config/gift/pc?debug&platform=2`
-            body = await request(opt)
+        } catch (e) {
+            return null
+        }
+        opt.url = `https://www.quanmin.tv/shouyin_api/public/config/gift/pc?debug&platform=2`
+        try {
+            let body = await request(opt)
             if (!body) {
                 return null
             }
@@ -117,15 +122,13 @@ class quanmin_danmu extends events {
     }
 
     async start() {
-        if (this._starting) {
-            return
-        }
+        if (this._starting) return
         this._starting = true
         this._init_crc_obj()
         this._uid = await this._get_uid()
-        if (!this._uid || !this._starting) {
-            this.emit('error', new Error('Fail to get uid'))
-            return this.emit('close')
+        if (!this._uid) {
+            this.emit('error', new Error('Fail to get uid,try to use roomid'))
+            this._uid = this._roomid
         }
         this._gift_info = await this._get_gift_info()
         if (!this._gift_info || !this._starting) {
@@ -167,14 +170,12 @@ class quanmin_danmu extends events {
         this._send(this._auth_data, "Gateway.Login.Req")
     }
 
-
     async _fresh_gift_info() {
         let gift_info = await this._get_gift_info()
         if (!gift_info) {
             return this.emit('error', new Error('Fail to get gift info'))
         }
         this._gift_info = gift_info
-        console.log(this._gift_info);
     }
 
     _heartbeat() {
@@ -182,14 +183,18 @@ class quanmin_danmu extends events {
     }
 
     _on_msg(e) {
-        e = to_arraybuffer(e)
-        for (var n = new ArrayBuffer(16), r = new DataView(n), i = new Int32Array(e.slice(0, 16)), o = 0, s = i.length; s > o; o++)
-            r.setInt32(4 * o, i[o], !1);
-        var a = (r.getInt32(4, 8, !1), this._receive_crc_obj[r.getInt32(8, 12, !1)])
-        var l = new Uint8Array(e.slice(16));
-        if (a) {
-            var u = this._decode(l, a);
-            this._format_msg(u, a)
+        try {
+            e = to_arraybuffer(e)
+            for (var n = new ArrayBuffer(16), r = new DataView(n), i = new Int32Array(e.slice(0, 16)), o = 0, s = i.length; s > o; o++)
+                r.setInt32(4 * o, i[o], !1);
+            var a = (r.getInt32(4, 8, !1), this._receive_crc_obj[r.getInt32(8, 12, !1)])
+            var l = new Uint8Array(e.slice(16));
+            if (a) {
+                var u = this._decode(l, a);
+                this._format_msg(u, a)
+            }
+        } catch (e) {
+            this.emit('error', e)
         }
     }
 
@@ -200,6 +205,9 @@ class quanmin_danmu extends events {
                 this._send({ owid: this._uid }, "Gateway.RoomJoin.Req")
                 break;
             case 'Gateway.Chat.Notify':
+                if (msg.owid != this._uid) {
+                    return
+                }
                 let plat = 'pc_web'
                 if (msg.platForm === 'iOS') {
                     plat = 'ios'
@@ -225,6 +233,7 @@ class quanmin_danmu extends events {
                     return
                 }
                 let gift = this._gift_info[msg.attrId + ''] || { name: '未知礼物', price: 0 }
+                let id = md5(`${msg.owid}${msg.user.uid}${msg.user.exp}${msg.attrId}${msg.comboId}${msg.combo}${msg.retetionAttr.nowTime}`)
                 msg_obj = {
                     type: 'gift',
                     time: msg.retetionAttr.nowTime,
@@ -236,6 +245,7 @@ class quanmin_danmu extends events {
                     },
                     count: msg.count,
                     price: msg.count * gift.price,
+                    id: id,
                     raw: msg
                 }
                 this.emit('message', msg_obj)

@@ -127,6 +127,7 @@ msg对象type有chat,gift,online,fight,other五种值
             rid: '发送者rid,String',
             level: '发送者等级,Number'
         },
+        id: '唯一弹幕id,String',
         count: '礼物数量,Number',
         price: '礼物总价值(单位牛币),Number'
         raw: '原始消息,Object'

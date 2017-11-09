@@ -1,6 +1,6 @@
 {
   "name": "quanmin-danmu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "quanmin danmu module",
   "main": "index.js",
   "scripts": {
@@ -20,9 +20,10 @@
   },
   "dependencies": {
     "ws": "*",
-    "to-arraybuffer": "*",
-    "protobufjs": "*",
+    "md5": "*",
     "request": "*",
+    "protobufjs": "*",
+    "to-arraybuffer": "*",
     "request-promise": "*"
   },
   "homepage": "https://github.com/BacooTang/quanmin-danmu#readme"
