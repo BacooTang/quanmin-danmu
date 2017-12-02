@@ -3,6 +3,7 @@ const fs = require('fs')
 const md5 = require('md5')
 const crc32 = require('./crc32')
 const events = require('events')
+const room_info = require('room_info')
 const gateway = require('./gateway')
 const protobuf = require("protobufjs")
 const request = require('request-promise')
@@ -18,22 +19,10 @@ class quanmin_danmu extends events {
     }
 
     async _get_uid() {
-        let opt = {
-            url: `http://m.quanmin.tv/${this._roomid}`,
-            timeout: REQUEST_TIMEOUT,
-            gzip: true,
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Mobile Safari/537.36'
-            }
-        }
-        try {
-            let body = await request(opt)
-            let uid_array = body.match(/"no":\d+,"uid":(\d+)/)
-            if (!uid_array || !uid_array[1]) {
-                return null
-            }
-            return parseInt(uid_array[1])
-        } catch (e) {
+        let info = await room_info('quanmin', this._roomid)
+        if (info) {
+            return parseInt(info.roomid)
+        } else {
             return null
         }
     }
@@ -223,6 +212,7 @@ class quanmin_danmu extends events {
                         level: msg.user.level,
                         plat: plat
                     },
+                    id: md5(JSON.stringify(msg)),
                     content: msg.txt,
                     raw: msg
                 }
@@ -233,7 +223,7 @@ class quanmin_danmu extends events {
                     return
                 }
                 let gift = this._gift_info[msg.attrId + ''] || { name: '未知礼物', price: 0 }
-                let id = md5(`${msg.owid}${msg.user.uid}${msg.user.exp}${msg.attrId}${msg.comboId}${msg.combo}${msg.retetionAttr.nowTime}`)
+                let id = md5(JSON.stringify(msg))
                 msg_obj = {
                     type: 'gift',
                     time: msg.retetionAttr.nowTime,
