@@ -262,7 +262,7 @@ class quanmin_danmu extends events {
                     fight: msg.liveData.fight,
                     raw: msg
                 }
-                this.emit('room', msg_obj)
+                this.emit('message', msg_obj)
                 break;
             default:
                 msg_obj = {
