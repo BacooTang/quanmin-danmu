@@ -96,8 +96,8 @@ class quanmin_danmu extends events {
         }
         try {
             let body = await request(opt)
-            fs.writeFileSync('./msg.proto', body)
-            return await protobuf.load("./msg.proto")
+            fs.writeFileSync(__dirname + '/msg.proto', body)
+            return await protobuf.load(__dirname + '/msg.proto')
         } catch (e) {
             return null
         }
