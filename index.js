@@ -116,8 +116,8 @@ class quanmin_danmu extends events {
         this._init_crc_obj()
         this._uid = await this._get_uid()
         if (!this._uid) {
-            this.emit('error', new Error('Fail to get uid,try to use roomid'))
-            this._uid = this._roomid
+            this.emit('error', new Error('Fail to get uid'))
+            return this.emit('close')
         }
         this._gift_info = await this._get_gift_info()
         if (!this._gift_info || !this._starting) {
