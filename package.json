@@ -1,6 +1,6 @@
 {
   "name": "quanmin-danmu",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "quanmin danmu module",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   "dependencies": {
     "ws": "*",
     "md5": "*",
-    "room_info": "*",
+    "room_info": "^1.0.10",
     "request": "*",
     "protobufjs": "^6.8.0",
     "to-arraybuffer": "*",

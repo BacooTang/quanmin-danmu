@@ -21,7 +21,7 @@ class quanmin_danmu extends events {
     async _get_uid() {
         let info = await room_info('quanmin', this._roomid)
         if (info) {
-            return parseInt(info.roomid)
+            return parseInt(info.uid)
         } else {
             return null
         }
