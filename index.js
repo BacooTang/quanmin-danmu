@@ -7,16 +7,30 @@ const room_info = require('room_info')
 const gateway = require('./gateway')
 const protobuf = require("protobufjs")
 const request = require('request-promise')
+const socks_agent = require('socks-proxy-agent')
 const to_arraybuffer = require('to-arraybuffer')
 const REQUEST_TIMEOUT = 10000
 const HEART_BEAT_INTERVAL = 15000
 const FRESH_GIFT_INFO_INTERVAL = 30 * 60 * 1000
 
 class quanmin_danmu extends events {
-    constructor(roomid) {
+    constructor(roomid, proxy) {
         super()
         this._roomid = roomid
+        this.set_proxy(proxy)
     }
+
+    set_proxy(proxy) {
+        this._agent = null
+        if (proxy) {
+            let auth = ''
+            if (proxy.name && proxy.pass)
+                auth = `${proxy.name}:${proxy.pass}@`
+            let socks_url = `socks://${auth}${proxy.ip}:${proxy.port || 8080}`
+            this._agent = new socks_agent(socks_url)
+        }
+    }
+
 
     async _get_uid() {
         let info = await room_info('quanmin', this._roomid)
@@ -33,7 +47,8 @@ class quanmin_danmu extends events {
             url: `https://www.quanmin.tv/shouyin_api/public/config/gift/pc?debug&platform=1`,
             timeout: REQUEST_TIMEOUT,
             json: true,
-            gzip: true
+            gzip: true,
+            agent: this._agent
         }
         try {
             let body = await request(opt)
@@ -72,7 +87,8 @@ class quanmin_danmu extends events {
             url: 'http://m.quanmin.tv/shouyin_api/auth/get/authData?debug',
             timeout: REQUEST_TIMEOUT,
             json: true,
-            gzip: true
+            gzip: true,
+            agent: this._agent
         }
         try {
             let body = await request(opt)
@@ -92,7 +108,8 @@ class quanmin_danmu extends events {
             url: 'http://m.quanmin.tv/static/v2/m/lib/pb-socket/msg.proto',
             timeout: REQUEST_TIMEOUT,
             json: true,
-            gzip: true
+            gzip: true,
+            agent: this._agent
         }
         try {
             let body = await request(opt)
@@ -139,7 +156,9 @@ class quanmin_danmu extends events {
     }
 
     _start_ws() {
-        this._client = new ws("ws://h5_ws.quanmin.tv:8890/ws")
+        this._client = new ws("ws://h5_ws.quanmin.tv:8890/ws", {
+            agent: this._agent
+        })
         this._client.on('open', () => {
             this.emit('connect')
             this._login_req()
