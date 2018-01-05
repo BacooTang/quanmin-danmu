@@ -254,6 +254,7 @@ class quanmin_danmu extends events {
                     },
                     count: msg.count,
                     price: msg.count * gift.price,
+                    price: msg.count * gift.price * 0.1,
                     id: id,
                     raw: msg
                 }
