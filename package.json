@@ -1,10 +1,10 @@
 {
   "name": "quanmin-danmu",
-  "version": "1.1.14",
+  "version": "2.0.0",
   "description": "quanmin danmu module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "repository": {
     "type": "git",
@@ -19,14 +19,14 @@
     "url": "https://github.com/BacooTang/quanmin-danmu/issues"
   },
   "dependencies": {
-    "ws": "*",
-    "md5": "*",
-    "room_info": "^1.0.10",
-    "request": "*",
+    "ws": "^4.0.0",
+    "md5": "^2.2.1",
+    "delay": "^2.0.0",
+    "request": "^2.83.0",
     "protobufjs": "^6.8.0",
-    "to-arraybuffer": "*",
-    "request-promise": "*",
-    "socks-proxy-agent": "*"
+    "to-arraybuffer": "^1.0.1",
+    "request-promise": "^4.2.2",
+    "socks-proxy-agent": "^3.0.1"
   },
   "homepage": "https://github.com/BacooTang/quanmin-danmu#readme"
 }

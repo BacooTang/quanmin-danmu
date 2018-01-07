@@ -17,8 +17,8 @@ npm install quanmin-danmu --save
 通过如下代码，可以初步通过Node.js对弹幕进行处理。
 
 ```javascript
-const quanmin_danmu = require('quanmin-danmu')
-const roomid = '8242492'
+const quanmin_danmu = require('./index')
+const roomid = '2333'
 const client = new quanmin_danmu(roomid)
 
 client.on('connect', () => {
@@ -26,15 +26,21 @@ client.on('connect', () => {
 })
 
 client.on('message', msg => {
-    switch(msg.type){
+    switch (msg.type) {
         case 'chat':
             console.log(`[${msg.from.name}]:${msg.content}`)
             break
         case 'gift':
             console.log(`[${msg.from.name}]->赠送${msg.count}个${msg.name}`)
             break
-        default:
-            //do what you like
+        case 'zhongzi':
+            console.log(`[${msg.from.name}]->赠送${msg.count}个${msg.name}`)
+            break
+        case 'fight':
+            console.log(`[当前战斗力]:${msg.count}`)
+            break
+        case 'online':
+            console.log(`[当前人气]:${msg.count}`)
             break
     }
 })
@@ -61,6 +67,16 @@ const client = new quanmin_danmu(roomid)
 client.start()
 ```
 
+### 使用socks5代理监听
+
+```javascript
+const quanmin_danmu = require('quanmin-danmu')
+const roomid = '80000'
+const proxy = 'socks://name:pass@127.0.0.1:1080'
+const client = new quanmin_danmu({roomid,proxy})
+client.start()
+```
+
 ### 停止监听弹幕
 
 ```javascript
@@ -70,35 +86,23 @@ client.stop()
 ### 监听事件
 
 ```javascript
-client.on('connect', () => {
+client.on('connect', _ => {
     console.log('connect')
 })
 
-client.on('message', msg => {
-    console.log('message',msg)
-})
+client.on('message', console.log)
 
-client.on('error', e => {
-    console.log('error',e)
-})
+client.on('error', console.log)
 
-client.on('close', () => {
+client.on('close', _ => {
     console.log('close')
-})
-```
-
-### 断线重连
-
-```javascript
-client.on('close', () => {
-    client.start()
 })
 ```
 
 ### msg对象
 
-msg对象type有chat,gift,online,fight,other五种值
-分别对应聊天内容、礼物、人气、战斗力、其他
+msg对象type有chat,gift,zhongzi,online,fight五种值
+分别对应聊天内容、礼物、种子、人气、战斗力
 
 #### chat消息
 ```javascript
@@ -111,8 +115,8 @@ msg对象type有chat,gift,online,fight,other五种值
             level: '发送者等级,Number',
             plat: '发送者平台(android,ios,pc_web,unknow),String'
         },
-        content: '聊天内容,String',
-        raw: '原始消息,Object'
+        id: '弹幕唯一id,String',
+        content: '聊天内容,String'
     }
 ```
 
@@ -127,10 +131,26 @@ msg对象type有chat,gift,online,fight,other五种值
             rid: '发送者rid,String',
             level: '发送者等级,Number'
         },
-        id: '唯一弹幕id,String',
+        id: '礼物唯一id,String',
         count: '礼物数量,Number',
-        price: '礼物总价值(单位牛币),Number'
-        raw: '原始消息,Object'
+        price: '礼物总价值(单位牛币),Number',
+        earn: '礼物总价值(单位元),Number'
+    }
+```
+
+#### zhongzi消息
+```javascript
+    {
+        type: 'zhongzi',
+        time: '毫秒时间戳,Number',
+        name: '礼物名称,String',
+        from: {
+            name: '发送者昵称,String',
+            rid: '发送者rid,String',
+            level: '发送者等级,Number'
+        },
+        id: '礼物唯一id,String',
+        count: '礼物数量,Number'
     }
 ```
 
@@ -139,8 +159,7 @@ msg对象type有chat,gift,online,fight,other五种值
     {
         type: 'online',
         time: '毫秒时间戳(服务器无返回time,此处为本地收到消息时间),Number',
-        count: '当前人气值,Number',
-        raw: '原始消息,Object'
+        count: '当前人气值,Number'
     }
 ```
 
@@ -149,16 +168,16 @@ msg对象type有chat,gift,online,fight,other五种值
     {
         type: 'fight',
         time: '毫秒时间戳(服务器无返回time,此处为本地收到消息时间),Number',
-        count: '当前战斗力,Number',
-        raw: '原始消息,Object'
+        count: '当前战斗力,Number'
     }
 ```
 
-#### other消息
+#### room消息
 ```javascript
     {
-        type: 'other',
+        type: 'room',
         time: '毫秒时间戳(服务器无返回time,此处为本地收到消息时间),Number',
-        raw: '原始消息,Object'
+        online: '当前人气值,Number',
+        fight: '当前战斗力,Number',
     }
 ```
