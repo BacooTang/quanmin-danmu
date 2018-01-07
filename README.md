@@ -17,7 +17,7 @@ npm install quanmin-danmu --save
 通过如下代码，可以初步通过Node.js对弹幕进行处理。
 
 ```javascript
-const quanmin_danmu = require('./index')
+const quanmin_danmu = require('quanmin-danmu')
 const roomid = '2333'
 const client = new quanmin_danmu(roomid)
 
@@ -81,6 +81,14 @@ client.start()
 
 ```javascript
 client.stop()
+```
+
+### 断线重连
+
+```javascript
+client.on('close', _ => {
+    client.start()
+})
 ```
 
 ### 监听事件

@@ -1,7 +1,6 @@
 const ws = require('ws')
 const fs = require('fs')
 const md5 = require('md5')
-const delay = require('delay')
 const crc32 = require('./crc32')
 const events = require('events')
 const gateway = require('./gateway')
@@ -11,7 +10,6 @@ const socks_agent = require('socks-proxy-agent')
 const to_arraybuffer = require('to-arraybuffer')
 
 const timeout = 30000
-const close_delay = 100
 const heartbeat_interval = 15000
 const fresh_gift_interval = 60 * 60 * 1000
 const free_gift = { name: '未知礼物', price: 0 }
@@ -144,8 +142,6 @@ class quanmin_danmu extends events {
         this._client.on('close', async () => {
             this._stop()
             this.emit('close')
-            await delay(close_delay)
-            this._reconnect && this.start()
         })
         this._client.on('message', this._on_msg.bind(this))
     }
@@ -312,7 +308,6 @@ class quanmin_danmu extends events {
     }
 
     stop() {
-        this._reconnect = false
         this.removeAllListeners()
         this._stop()
     }
