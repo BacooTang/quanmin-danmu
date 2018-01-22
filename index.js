@@ -207,7 +207,7 @@ class quanmin_danmu extends events {
             price: msg.count * gift.price,
             earn: msg.count * gift.price * 0.1,
         }
-        if (gift.name.indexOf('种子')) {
+        if (gift.name.indexOf('种子') > -1) {
             msg_obj.type = 'zhongzi'
             delete msg_obj.price
             delete msg_obj.earn
